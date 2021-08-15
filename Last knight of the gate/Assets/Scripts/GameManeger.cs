@@ -11,7 +11,12 @@ public class GameManeger : MonoBehaviour
     public float defesa;
     public bool atacando;
     public float regenVida;
-    public int coinCount=1;
+    public int coinCount = 1;
+    public int level = 1;
+    public int nextLevel = 10;
+    public int expAtual = 0;
+    private float fatorLevel = 1.0f;
+    public int experience = 0;
     // Start is called before the first frame update
     public static GameManeger Instance
     {
@@ -36,14 +41,23 @@ public class GameManeger : MonoBehaviour
     void Start()
     {
         atacando = false;
+        ResetPlayerStats();
+    }
+
+    public void ResetPlayerStats()
+    {
         vida = 600;
         MaxVida = 600;
         dano = 20;
         defesa = 4;
         regenVida = 1;
         coinCount = 1;
+        level = 1;
+        nextLevel = 10;
+        expAtual = 0;
+        fatorLevel = 1.0f;
+        experience = 0;
     }
-
     public float getDano()
     {
         return dano;
@@ -60,7 +74,7 @@ public class GameManeger : MonoBehaviour
         float atacar = Input.GetAxis("Fire1");
         if (atacar != 0)
         {
-            atacando= true;
+            atacando = true;
         }
         else
         {
@@ -90,12 +104,43 @@ public class GameManeger : MonoBehaviour
             vida -= danoMonstro - defesa;
         }
         vida = Mathf.Clamp(vida, 0, MaxVida);
+        if (isGameOver())
+        {
+            SceneManager.LoadScene("Menu");
+        }
         //Debug.Log("Vida Atual " + vida);
     }
 
+    public void recebeEXP(int exp)
+    {
+        expAtual += exp;
+
+        if (expAtual >= nextLevel)
+        {
+            MaxVida += 30;
+            vida = MaxVida;
+            dano += 4;
+            defesa += 2;
+            if (expAtual > nextLevel)
+            {
+                int diferenca = 0;
+                diferenca = expAtual - nextLevel;
+                level += 1;
+                expAtual = diferenca;
+            }
+            else if (expAtual == nextLevel)
+            {
+                level += 1;
+                expAtual = 0;
+            }
+            nextLevel = (int)Math.Pow(10, fatorLevel);
+            fatorLevel += 0.2f;
+        }
+    }
     private bool isGameOver()
     {
-        if(vida <= 0){
+        if (vida <= 0)
+        {
             return true;
         }
         return false;

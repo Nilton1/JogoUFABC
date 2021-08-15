@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class PlayerMoviment : MonoBehaviour
 {
     public Text coinCountText;
+    public Text level;
+    public Text exp;
     Rigidbody rb;
     Vector3 Vec;
     float rotacao;
@@ -31,6 +33,8 @@ public class PlayerMoviment : MonoBehaviour
     private void FixedUpdate()
     {
         coinCountText.text = GameManeger.Instance.coinCount.ToString();
+        level.text = "Level: " + GameManeger.Instance.level.ToString();
+        exp.text = "Exp: " + GameManeger.Instance.expAtual.ToString() + "/" + GameManeger.Instance.nextLevel.ToString();
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
         float correr = Input.GetAxis("Fire3");
